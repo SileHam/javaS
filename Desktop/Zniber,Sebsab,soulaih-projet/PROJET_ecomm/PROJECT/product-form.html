@@ -1,0 +1,333 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle" data-i18n="addProduct">Ajouter un produit</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <h2><i class="fas fa-shopping-cart"></i> E-Commerce</h2>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="dashboard.html" class="menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span data-i18n="dashboard">Tableau de bord</span>
+                </a>
+                <a href="products.html" class="menu-item active">
+                    <i class="fas fa-box"></i>
+                    <span data-i18n="products">Produits</span>
+                </a>
+                <a href="categories.html" class="menu-item">
+                    <i class="fas fa-tags"></i>
+                    <span data-i18n="categories">Catégories</span>
+                </a>
+                <a href="customers.html" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    <span data-i18n="customers">Clients</span>
+                </a>
+                <a href="orders.html" class="menu-item">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span data-i18n="orders">Commandes</span>
+                </a>
+                <a href="suppliers.html" class="menu-item">
+                    <i class="fas fa-truck"></i>
+                    <span data-i18n="suppliers">Fournisseurs</span>
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar">
+                <div class="navbar-left">
+                    <button class="btn btn-icon btn-secondary" id="toggleSidebar" style="margin-right: 15px; display: none;">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 id="pageHeading" data-i18n="addProduct">Ajouter un produit</h1>
+                </div>
+                <div class="navbar-right">
+                    <button id="toggleDarkMode" class="btn btn-icon btn-secondary" title="Mode sombre"><i id="darkModeIcon" class="fas fa-moon"></i></button><div class="language-selector">
+                        <button class="lang-btn active" onclick="changeLanguage('fr')">FR</button>
+                        <button class="lang-btn" onclick="changeLanguage('ar')">AR</button>
+                        <button class="lang-btn" onclick="changeLanguage('en')">EN</button>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar">A</div>
+                        <span id="userName">Admin</span>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="Auth.logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span data-i18n="logout">Déconnexion</span>
+                    </button>
+                </div>
+            </nav>
+            
+            <!-- Content -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title" id="formTitle" data-i18n="addProduct">Ajouter un produit</h2>
+                    <a href="products.html" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        <span data-i18n="back">Retour</span>
+                    </a>
+                </div>
+                
+                <form id="productForm">
+                    <div class="details-grid">
+                        <div class="form-group">
+                            <label for="name" data-i18n="productName">Nom du produit *</label>
+                            <input type="text" id="name" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="categoryId" data-i18n="category">Catégorie *</label>
+                            <select id="categoryId" class="form-control" required>
+                                <option value="">Sélectionner...</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="price" data-i18n="price">Prix (DH) *</label>
+                            <input type="number" id="price" class="form-control" step="0.01" min="0" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="stock" data-i18n="stock">Stock *</label>
+                            <input type="number" id="stock" class="form-control" min="0" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="supplierId" data-i18n="supplier">Fournisseur *</label>
+                            <select id="supplierId" class="form-control" required>
+                                <option value="">Sélectionner...</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="image" data-i18n="image">URL Image</label>
+                            <input type="url" id="image" class="form-control">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description" data-i18n="description">Description *</label>
+                        <textarea id="description" class="form-control" rows="4" required></textarea>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='products.html'">
+                            <i class="fas fa-times"></i>
+                            <span data-i18n="cancel">Annuler</span>
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            <span data-i18n="save">Enregistrer</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+    
+    <script src="data/initial-data.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        // Initialize
+        initializeData();
+        i18n.translatePage();
+        
+        // Require admin access for form pages
+        Auth.requireAdmin();
+        
+        // Update user info
+        const session = Auth.getSession();
+        if (session) {
+            document.getElementById('userName').textContent = session.name;
+            document.getElementById('userAvatar').textContent = session.name.charAt(0).toUpperCase();
+        }
+        
+        // Load data
+        const categories = Storage.getAll('categories');
+        const suppliers = Storage.getAll('suppliers');
+        
+        // Populate dropdowns
+        const categorySelect = document.getElementById('categoryId');
+        categories.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.name;
+            categorySelect.appendChild(option);
+        });
+        
+        const supplierSelect = document.getElementById('supplierId');
+        suppliers.forEach(sup => {
+            const option = document.createElement('option');
+            option.value = sup.id;
+            option.textContent = sup.name;
+            supplierSelect.appendChild(option);
+        });
+        
+        // Check if editing
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+        let isEdit = false;
+        
+        if (productId) {
+            isEdit = true;
+            const product = Storage.find('products', productId);
+            
+            if (product) {
+                // Update titles
+                document.getElementById('pageTitle').textContent = i18n.t('editProduct');
+                document.getElementById('pageHeading').textContent = i18n.t('editProduct');
+                document.getElementById('formTitle').textContent = i18n.t('editProduct');
+                
+                // Fill form
+                document.getElementById('name').value = product.name;
+                document.getElementById('categoryId').value = product.categoryId;
+                document.getElementById('price').value = product.price;
+                document.getElementById('stock').value = product.stock;
+                document.getElementById('supplierId').value = product.supplierId;
+                document.getElementById('image').value = product.image || '';
+                document.getElementById('description').value = product.description;
+            }
+        }
+        
+        // Form validation
+        function validateForm() {
+            Validator.clearAllErrors();
+            let isValid = true;
+            
+            const name = document.getElementById('name').value.trim();
+            const categoryId = document.getElementById('categoryId').value;
+            const price = document.getElementById('price').value;
+            const stock = document.getElementById('stock').value;
+            const supplierId = document.getElementById('supplierId').value;
+            const description = document.getElementById('description').value.trim();
+            const image = document.getElementById('image').value.trim();
+            
+            if (!Validator.isRequired(name)) {
+                Validator.showError('name', i18n.t('requiredField'));
+                isValid = false;
+            } else if (!Validator.minLength(name, 3)) {
+                Validator.showError('name', 'Le nom doit contenir au moins 3 caractères');
+                isValid = false;
+            }
+            
+            if (!categoryId) {
+                Validator.showError('categoryId', i18n.t('requiredField'));
+                isValid = false;
+            }
+            
+            if (!Validator.isRequired(price)) {
+                Validator.showError('price', i18n.t('requiredField'));
+                isValid = false;
+            } else if (!Validator.isPositive(price)) {
+                Validator.showError('price', 'Le prix doit être positif');
+                isValid = false;
+            }
+            
+            if (!Validator.isRequired(stock)) {
+                Validator.showError('stock', i18n.t('requiredField'));
+                isValid = false;
+            } else if (!Validator.isNumber(stock) || parseInt(stock) < 0) {
+                Validator.showError('stock', 'Le stock doit être un nombre positif');
+                isValid = false;
+            }
+            
+            if (!supplierId) {
+                Validator.showError('supplierId', i18n.t('requiredField'));
+                isValid = false;
+            }
+            
+            if (!Validator.isRequired(description)) {
+                Validator.showError('description', i18n.t('requiredField'));
+                isValid = false;
+            } else if (!Validator.minLength(description, 10)) {
+                Validator.showError('description', 'La description doit contenir au moins 10 caractères');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+        
+        // Handle form submission
+        document.getElementById('productForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            if (!validateForm()) {
+                return;
+            }
+            
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                categoryId: parseInt(document.getElementById('categoryId').value),
+                price: parseFloat(document.getElementById('price').value),
+                stock: parseInt(document.getElementById('stock').value),
+                supplierId: parseInt(document.getElementById('supplierId').value),
+                description: document.getElementById('description').value.trim(),
+                image: document.getElementById('image').value.trim() || '',
+                createdAt: new Date().toISOString().split('T')[0]
+            };
+            
+            if (isEdit) {
+                Storage.update('products', productId, formData);
+                showToast(i18n.t('updateSuccess'), 'success');
+            } else {
+                Storage.add('products', formData);
+                showToast(i18n.t('saveSuccess'), 'success');
+            }
+            
+            setTimeout(() => {
+                window.location.href = 'products.html';
+            }, 1500);
+        });
+        
+        // Real-time validation
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('blur', validateForm);
+            input.addEventListener('input', () => {
+                if (input.classList.contains('error')) {
+                    Validator.clearError(input.id);
+                }
+            });
+        });
+        
+        // Language selector
+        function changeLanguage(lang) {
+            i18n.setLanguage(lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            location.reload();
+        }
+        
+        // Sidebar toggle
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('toggleSidebar');
+        
+        function checkScreenSize() {
+            if (window.innerWidth <= 1024) {
+                toggleBtn.style.display = 'inline-flex';
+            } else {
+                toggleBtn.style.display = 'none';
+                sidebar.classList.remove('active');
+            }
+        }
+        
+        toggleBtn.addEventListener('click', () => sidebar.classList.toggle('active'));
+        window.addEventListener('resize', checkScreenSize);
+        checkScreenSize();
+    </script>
+</body>
+</html>
+

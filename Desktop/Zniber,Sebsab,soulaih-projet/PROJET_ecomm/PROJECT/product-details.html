@@ -1,0 +1,328 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="productDetails">Détails du produit</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <h2><i class="fas fa-shopping-cart"></i> E-Commerce</h2>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="dashboard.html" class="menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span data-i18n="dashboard">Tableau de bord</span>
+                </a>
+                <a href="products.html" class="menu-item active">
+                    <i class="fas fa-box"></i>
+                    <span data-i18n="products">Produits</span>
+                </a>
+                <a href="categories.html" class="menu-item">
+                    <i class="fas fa-tags"></i>
+                    <span data-i18n="categories">Catégories</span>
+                </a>
+                <a href="customers.html" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    <span data-i18n="customers">Clients</span>
+                </a>
+                <a href="orders.html" class="menu-item">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span data-i18n="orders">Commandes</span>
+                </a>
+                <a href="suppliers.html" class="menu-item">
+                    <i class="fas fa-truck"></i>
+                    <span data-i18n="suppliers">Fournisseurs</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar">
+                <div class="navbar-left">
+                    <button class="btn btn-icon btn-secondary" id="toggleSidebar"
+                        style="margin-right: 15px; display: none;">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 data-i18n="productDetails">Détails du produit</h1>
+                </div>
+                <div class="navbar-right">
+                    <button id="toggleDarkMode" class="btn btn-icon btn-secondary" title="Mode sombre"><i id="darkModeIcon" class="fas fa-moon"></i></button><div class="language-selector">
+                        <button class="lang-btn active" onclick="changeLanguage('fr')">FR</button>
+                        <button class="lang-btn" onclick="changeLanguage('ar')">AR</button>
+                        <button class="lang-btn" onclick="changeLanguage('en')">EN</button>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar">A</div>
+                        <span id="userName">Admin</span>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="Auth.logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span data-i18n="logout">Déconnexion</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Content -->
+            <div class="details-container" id="productDetails">
+                <div class="details-header">
+                    <h2 class="card-title" data-i18n="productDetails">Détails du produit</h2>
+                    <div class="flex gap-10">
+                        <button class="btn btn-secondary" onclick="window.history.back()">
+                            <i class="fas fa-arrow-left"></i>
+                            <span data-i18n="back">Retour</span>
+                        </button>
+                        <button class="btn btn-info" onclick="exportDetailsToPDF()">
+                            <i class="fas fa-file-pdf"></i>
+                            <span data-i18n="exportPDF">Exporter PDF</span>
+                        </button>
+                        <a href="#" id="editBtn" class="btn btn-warning">
+                            <i class="fas fa-edit"></i>
+                            <span data-i18n="edit">Modifier</span>
+                        </a>
+                        <button class="btn btn-danger" id="deleteBtn">
+                            <i class="fas fa-trash"></i>
+                            <span data-i18n="delete">Supprimer</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 300px 1fr; gap: 30px; margin-bottom: 30px;">
+                    <div>
+                        <img id="productImage" src="" alt="Product"
+                            style="width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    </div>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <div class="detail-label" data-i18n="productName">Nom du produit</div>
+                            <div class="detail-value" id="productName">-</div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-label" data-i18n="category">Catégorie</div>
+                            <div class="detail-value" id="productCategory">-</div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-label" data-i18n="price">Prix</div>
+                            <div class="detail-value" id="productPrice">-</div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-label" data-i18n="stock">Stock</div>
+                            <div class="detail-value" id="productStock">-</div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-label" data-i18n="supplier">Fournisseur</div>
+                            <div class="detail-value" id="productSupplier">-</div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-label" data-i18n="createdAt">Date de création</div>
+                            <div class="detail-value" id="productCreated">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-item" style="padding: 20px;">
+                    <div class="detail-label" data-i18n="description">Description</div>
+                    <div class="detail-value" id="productDescription" style="line-height: 1.8; margin-top: 10px;">-
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="data/initial-data.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        // Initialize
+        initializeData();
+        i18n.translatePage();
+
+        // Update user info
+        const session = Auth.getSession();
+        if (session) {
+            document.getElementById('userName').textContent = session.name;
+            document.getElementById('userAvatar').textContent = session.name.charAt(0).toUpperCase();
+        }
+
+        // Get product ID
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        if (!productId) {
+            window.location.href = 'products.html';
+        }
+
+        // Load product
+        const product = Storage.find('products', productId);
+
+        if (!product) {
+            showToast(i18n.t('notFound'), 'error');
+            setTimeout(() => {
+                window.location.href = 'products.html';
+            }, 2000);
+        } else {
+            const categories = Storage.getAll('categories');
+            const suppliers = Storage.getAll('suppliers');
+
+            const category = categories.find(c => c.id === product.categoryId);
+            const supplier = suppliers.find(s => s.id === product.supplierId);
+
+            // Display product details
+            let productImage = product.image || `images/product-${product.id}.jpeg`;
+            if (productImage.startsWith('ecommerce1/')) productImage = productImage.replace(/^ecommerce1\//, '');
+            if (productImage.includes('placeholder.com') || productImage.includes('via.placeholder') || productImage.includes('picsum.photos')) {
+                productImage = `images/product-${product.id}.jpeg`;
+            }
+            if (!productImage.match(/^https?:\/\//) && !productImage.startsWith('/') && !productImage.startsWith('images/')) {
+                productImage = `images/${productImage}`;
+            }
+            document.getElementById('productImage').src = productImage;
+            document.getElementById('productImage').alt = product.name;
+            document.getElementById('productImage').onerror = function () {
+                this.onerror = null;
+                this.src = `images/product-${product.id}.jpeg`;
+            };
+            document.getElementById('productName').textContent = product.name;
+            document.getElementById('productCategory').textContent = category ? category.name : '-';
+            document.getElementById('productPrice').textContent = formatCurrency(product.price);
+            document.getElementById('productStock').innerHTML = `<span class="badge ${product.stock < 10 ? 'badge-danger' : 'badge-success'}">${product.stock}</span>`;
+            document.getElementById('productSupplier').textContent = supplier ? supplier.name : '-';
+            document.getElementById('productCreated').textContent = formatDate(product.createdAt);
+            document.getElementById('productDescription').textContent = product.description;
+
+            // Set edit link
+            document.getElementById('editBtn').href = `product-form.html?id=${productId}`;
+
+            // Delete handler
+            document.getElementById('deleteBtn').addEventListener('click', () => {
+                showConfirmModal(
+                    `${i18n.t('confirmDelete')}<br><strong>${product.name}</strong>`,
+                    () => {
+                        Storage.delete('products', productId);
+                        showToast(i18n.t('deleteSuccess'), 'success');
+                        setTimeout(() => {
+                            window.location.href = 'products.html';
+                        }, 1500);
+                    }
+                );
+            });
+
+            // Role based actions
+            if (!Auth.isAdmin()) {
+                const editBtn = document.getElementById('editBtn');
+                const deleteBtn = document.getElementById('deleteBtn');
+                if (editBtn) editBtn.style.display = 'none';
+                if (deleteBtn) deleteBtn.style.display = 'none';
+
+                // Add to Cart button
+                const actionContainer = document.querySelector('.flex.gap-10');
+                if (actionContainer) {
+                    const cartBtn = document.createElement('button');
+                    cartBtn.className = 'btn btn-success';
+                    cartBtn.innerHTML = `<i class="fas fa-cart-plus"></i> <span>${i18n.t('addToCart')}</span>`;
+                    cartBtn.onclick = () => addToCart(productId);
+                    actionContainer.appendChild(cartBtn);
+                }
+            }
+        }
+
+        function addToCart(id) {
+            const product = Storage.find('products', id);
+            if (!product) return;
+
+            let cart = Storage.getAll('cart');
+            const existingItemIndex = cart.findIndex(item => item.productId == id);
+
+            if (existingItemIndex !== -1) {
+                cart[existingItemIndex].quantity += 1;
+                Storage.set('cart', cart);
+            } else {
+                Storage.add('cart', {
+                    productId: parseInt(id),
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    quantity: 1
+                });
+            }
+
+            showToast(i18n.t('addedToCart'), 'success');
+        }
+
+
+        // Export to PDF
+        async function exportDetailsToPDF() {
+            const element = document.getElementById('productDetails');
+
+            try {
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false
+                });
+
+                const imgData = canvas.toDataURL('image/png');
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+
+                const imgWidth = 190;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+                pdf.save(`product_${productId}_${new Date().toISOString().split('T')[0]}.pdf`);
+
+                showToast(i18n.t('pdfGenerated'), 'success');
+            } catch (error) {
+                console.error('PDF generation error:', error);
+                showToast(i18n.t('pdfError'), 'error');
+            }
+        }
+
+        // Language selector
+        function changeLanguage(lang) {
+            i18n.setLanguage(lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            location.reload();
+        }
+
+        // Sidebar toggle
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('toggleSidebar');
+
+        function checkScreenSize() {
+            if (window.innerWidth <= 1024) {
+                toggleBtn.style.display = 'inline-flex';
+            } else {
+                toggleBtn.style.display = 'none';
+                sidebar.classList.remove('active');
+            }
+        }
+
+        toggleBtn.addEventListener('click', () => sidebar.classList.toggle('active'));
+        window.addEventListener('resize', checkScreenSize);
+        checkScreenSize();
+    </script>
+</body>
+
+</html>

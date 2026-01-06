@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="customerDetails">Détails du client</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo"><h2><i class="fas fa-shopping-cart"></i> E-Commerce</h2></div>
+            <nav class="sidebar-menu">
+                <a href="dashboard.html" class="menu-item"><i class="fas fa-chart-line"></i><span data-i18n="dashboard">Tableau de bord</span></a>
+                <a href="products.html" class="menu-item"><i class="fas fa-box"></i><span data-i18n="products">Produits</span></a>
+                <a href="categories.html" class="menu-item"><i class="fas fa-tags"></i><span data-i18n="categories">Catégories</span></a>
+                <a href="customers.html" class="menu-item active"><i class="fas fa-users"></i><span data-i18n="customers">Clients</span></a>
+                <a href="orders.html" class="menu-item"><i class="fas fa-shopping-bag"></i><span data-i18n="orders">Commandes</span></a>
+                <a href="suppliers.html" class="menu-item"><i class="fas fa-truck"></i><span data-i18n="suppliers">Fournisseurs</span></a>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <nav class="navbar">
+                <div class="navbar-left">
+                    <button class="btn btn-icon btn-secondary" id="toggleSidebar" style="margin-right: 15px; display: none;"><i class="fas fa-bars"></i></button>
+                    <h1 data-i18n="customerDetails">Détails du client</h1>
+                </div>
+                <div class="navbar-right">
+                    <button id="toggleDarkMode" class="btn btn-icon btn-secondary" title="Mode sombre"><i id="darkModeIcon" class="fas fa-moon"></i></button><div class="language-selector">
+                        <button class="lang-btn" onclick="changeLanguage('fr')">FR</button>
+                        <button class="lang-btn" onclick="changeLanguage('ar')">AR</button>
+                        <button class="lang-btn" onclick="changeLanguage('en')">EN</button>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar">A</div>
+                        <span id="userName">Admin</span>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="Auth.logout()"><i class="fas fa-sign-out-alt"></i><span data-i18n="logout">Déconnexion</span></button>
+                </div>
+            </nav>
+            <div class="details-container" id="customerDetails">
+                <div class="details-header">
+                    <h2 class="card-title" data-i18n="customerDetails">Détails du client</h2>
+                    <div class="flex gap-10">
+                        <button class="btn btn-secondary" onclick="window.history.back()"><i class="fas fa-arrow-left"></i><span data-i18n="back">Retour</span></button>
+                        <button class="btn btn-info" onclick="exportDetailsToPDF()"><i class="fas fa-file-pdf"></i><span data-i18n="exportPDF">Exporter PDF</span></button>
+                        <a href="#" id="editBtn" class="btn btn-warning"><i class="fas fa-edit"></i><span data-i18n="edit">Modifier</span></a>
+                        <button class="btn btn-danger" id="deleteBtn"><i class="fas fa-trash"></i><span data-i18n="delete">Supprimer</span></button>
+                    </div>
+                </div>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="firstName">Prénom</div>
+                        <div class="detail-value" id="firstName">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="lastName">Nom</div>
+                        <div class="detail-value" id="lastName">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="email">Email</div>
+                        <div class="detail-value" id="email">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="phone">Téléphone</div>
+                        <div class="detail-value" id="phone">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="city">Ville</div>
+                        <div class="detail-value" id="city">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="status">Statut</div>
+                        <div class="detail-value" id="status">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="totalOrders">Total commandes</div>
+                        <div class="detail-value" id="totalOrders">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="totalSpent">Total dépensé</div>
+                        <div class="detail-value" id="totalSpent">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="createdAt">Date de création</div>
+                        <div class="detail-value" id="createdAt">-</div>
+                    </div>
+                </div>
+                <div class="detail-item" style="padding: 20px; margin-top: 20px;">
+                    <div class="detail-label" data-i18n="address">Adresse</div>
+                    <div class="detail-value" id="address" style="line-height: 1.8; margin-top: 10px;">-</div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="data/initial-data.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        initializeData();i18n.translatePage();initLanguageSelector();
+        const session=Auth.getSession();if(session){document.getElementById('userName').textContent=session.name;document.getElementById('userAvatar').textContent=session.name.charAt(0).toUpperCase();}
+        const urlParams=new URLSearchParams(window.location.search);const customerId=urlParams.get('id');
+        if(!customerId){window.location.href='customers.html';}
+        const customer=Storage.find('customers',customerId);
+        if(!customer){showToast(i18n.t('notFound'),'error');setTimeout(()=>{window.location.href='customers.html';},2000);}else{
+            document.getElementById('firstName').textContent=customer.firstName;
+            document.getElementById('lastName').textContent=customer.lastName;
+            document.getElementById('email').textContent=customer.email;
+            document.getElementById('phone').textContent=customer.phone;
+            document.getElementById('city').textContent=customer.city;
+            document.getElementById('status').innerHTML=`<span class="badge ${customer.status==='active'?'badge-success':'badge-secondary'}">${i18n.t(customer.status)}</span>`;
+            document.getElementById('totalOrders').textContent=customer.totalOrders||0;
+            document.getElementById('totalSpent').textContent=formatCurrency(customer.totalSpent||0);
+            document.getElementById('createdAt').textContent=formatDate(customer.createdAt);
+            document.getElementById('address').textContent=customer.address;
+            document.getElementById('editBtn').href=`customers.html?edit=${customerId}`;
+            document.getElementById('deleteBtn').addEventListener('click',()=>{showConfirmModal(`${i18n.t('confirmDelete')}<br><strong>${customer.firstName} ${customer.lastName}</strong>`,()=>{Storage.delete('customers',customerId);showToast(i18n.t('deleteSuccess'),'success');setTimeout(()=>{window.location.href='customers.html';},1500);});});
+        }
+        async function exportDetailsToPDF(){const element=document.getElementById('customerDetails');try{const canvas=await html2canvas(element,{scale:2,useCORS:true,logging:false});const imgData=canvas.toDataURL('image/png');const {jsPDF}=window.jspdf;const pdf=new jsPDF('p','mm','a4');const imgWidth=190;const imgHeight=(canvas.height*imgWidth)/canvas.width;pdf.addImage(imgData,'PNG',10,10,imgWidth,imgHeight);pdf.save(`customer_${customerId}_${new Date().toISOString().split('T')[0]}.pdf`);showToast(i18n.t('pdfGenerated'),'success');}catch(error){console.error('PDF generation error:',error);showToast(i18n.t('pdfError'),'error');}}
+        function changeLanguage(lang){i18n.setLanguage(lang);document.querySelectorAll('.lang-btn').forEach(btn=>btn.classList.remove('active'));event.target.classList.add('active');location.reload();}
+        const sidebar=document.getElementById('sidebar'),toggleBtn=document.getElementById('toggleSidebar');
+        function checkScreenSize(){toggleBtn.style.display=window.innerWidth<=1024?'inline-flex':'none';}
+        toggleBtn.addEventListener('click',()=>sidebar.classList.toggle('active'));window.addEventListener('resize',checkScreenSize);checkScreenSize();
+    </script>
+</body>
+</html>
+
+

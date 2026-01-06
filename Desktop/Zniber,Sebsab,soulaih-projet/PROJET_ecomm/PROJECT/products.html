@@ -1,0 +1,433 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="productList">Liste des produits</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <h2><i class="fas fa-shopping-cart"></i> E-Commerce</h2>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="dashboard.html" class="menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span data-i18n="dashboard">Tableau de bord</span>
+                </a>
+                <a href="products.html" class="menu-item active">
+                    <i class="fas fa-box"></i>
+                    <span data-i18n="products">Produits</span>
+                </a>
+                <a href="categories.html" class="menu-item">
+                    <i class="fas fa-tags"></i>
+                    <span data-i18n="categories">Catégories</span>
+                </a>
+                <a href="customers.html" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    <span data-i18n="customers">Clients</span>
+                </a>
+                <a href="orders.html" class="menu-item">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span data-i18n="orders">Commandes</span>
+                </a>
+                <a href="suppliers.html" class="menu-item">
+                    <i class="fas fa-truck"></i>
+                    <span data-i18n="suppliers">Fournisseurs</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar">
+                <div class="navbar-left">
+                    <button class="btn btn-icon btn-secondary" id="toggleSidebar"
+                        style="margin-right: 15px; display: none;">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 data-i18n="productList">Liste des produits</h1>
+                </div>
+                <div class="navbar-right">
+                    <button id="toggleDarkMode" class="btn btn-icon btn-secondary" title="Mode sombre"><i id="darkModeIcon" class="fas fa-moon"></i></button><div class="language-selector">
+                        <button class="lang-btn active" onclick="changeLanguage('fr')">FR</button>
+                        <button class="lang-btn" onclick="changeLanguage('ar')">AR</button>
+                        <button class="lang-btn" onclick="changeLanguage('en')">EN</button>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar">A</div>
+                        <span id="userName">Admin</span>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="Auth.logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span data-i18n="logout">Déconnexion</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Content -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title" data-i18n="productList">Liste des produits</h2>
+                    <div class="flex gap-10">
+                        <button class="btn btn-secondary" onclick="exportToCSV(currentData, 'products')">
+                            <i class="fas fa-file-csv"></i>
+                            <span data-i18n="export">Exporter CSV</span>
+                        </button>
+                        <a href="product-form.html" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            <span data-i18n="addProduct">Ajouter un produit</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters-container">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" class="form-control" data-i18n="search"
+                            placeholder="Rechercher...">
+                    </div>
+                    <select id="categoryFilter" class="form-control" style="min-width: 180px;">
+                        <option value="" data-i18n="all">Toutes les catégories</option>
+                    </select>
+                    <select id="supplierFilter" class="form-control" style="min-width: 180px;">
+                        <option value="" data-i18n="all">Tous les fournisseurs</option>
+                    </select>
+                    <select id="itemsPerPage" class="form-control" style="min-width: 120px;">
+                        <option value="10">10 / page</option>
+                        <option value="25">25 / page</option>
+                        <option value="50">50 / page</option>
+                    </select>
+                </div>
+
+                <!-- Table -->
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="cursor: pointer;" onclick="sortTable('id')">
+                                    ID <i class="fas fa-sort"></i>
+                                </th>
+                                <th data-i18n="image" style="width: 100px;">Image</th>
+                                <th style="cursor: pointer;" onclick="sortTable('name')">
+                                    <span data-i18n="productName">Nom</span> <i class="fas fa-sort"></i>
+                                </th>
+                                <th data-i18n="category">Catégorie</th>
+                                <th style="cursor: pointer;" onclick="sortTable('price')">
+                                    <span data-i18n="price">Prix</span> <i class="fas fa-sort"></i>
+                                </th>
+                                <th style="cursor: pointer;" onclick="sortTable('stock')">
+                                    <span data-i18n="stock">Stock</span> <i class="fas fa-sort"></i>
+                                </th>
+                                <th data-i18n="supplier">Fournisseur</th>
+                                <th data-i18n="actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTable"></tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" id="pagination"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="data/initial-data.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        // Initialize
+        initializeData();
+        i18n.translatePage();
+
+        // Make forceUpdateProductImages available globally for debugging
+        window.forceUpdateProductImages = function () {
+            if (typeof forceUpdateProductImages === 'function') {
+                forceUpdateProductImages();
+            } else {
+                console.error('forceUpdateProductImages function not found. Make sure initial-data.js is loaded.');
+            }
+        };
+
+        // Update user info
+        const session = Auth.getSession();
+        if (session) {
+            document.getElementById('userName').textContent = session.name;
+            document.getElementById('userAvatar').textContent = session.name.charAt(0).toUpperCase();
+        }
+
+        // Hide admin actions for regular users
+        const isAdmin = Auth.isAdmin();
+        if (!isAdmin) {
+            // Hide add button
+            const addButton = document.querySelector('a[href="product-form.html"]');
+            if (addButton) {
+                addButton.style.display = 'none';
+            }
+        }
+
+        // Load data
+        let allProducts = Storage.getAll('products');
+        const categories = Storage.getAll('categories');
+        const suppliers = Storage.getAll('suppliers');
+        let filteredProducts = [...allProducts];
+        let currentData = [];
+        let sortColumn = null;
+        let sortDirection = 'asc';
+        let pagination;
+
+        // Populate filter dropdowns
+        const categoryFilter = document.getElementById('categoryFilter');
+        categories.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.name;
+            categoryFilter.appendChild(option);
+        });
+
+        const supplierFilter = document.getElementById('supplierFilter');
+        suppliers.forEach(sup => {
+            const option = document.createElement('option');
+            option.value = sup.id;
+            option.textContent = sup.name;
+            supplierFilter.appendChild(option);
+        });
+
+        // Normalize product image path to use local `images/` folder when possible
+        function normalizeProductImage(product) {
+            let img = product.image || `images/product-${product.id}.jpeg`;
+            if (img.startsWith('ecommerce1/')) img = img.replace(/^ecommerce1\//, '');
+            // If image is a remote placeholder, or picsum, use local fallback
+            if (img.includes('placeholder.com') || img.includes('via.placeholder') || img.includes('picsum.photos')) {
+                img = `images/product-${product.id}.jpeg`;
+            }
+            // If image is just a filename (no protocol, doesn't start with / or images/), prefix with images/
+            if (!img.match(/^https?:\/\//) && !img.startsWith('/') && !img.startsWith('images/')) {
+                img = `images/${img}`;
+            }
+            return img;
+        }
+
+        // Filter and search
+        function filterProducts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryId = document.getElementById('categoryFilter').value;
+            const supplierId = document.getElementById('supplierFilter').value;
+
+            filteredProducts = allProducts.filter(product => {
+                const matchSearch = product.name.toLowerCase().includes(searchTerm) ||
+                    product.description.toLowerCase().includes(searchTerm);
+                const matchCategory = !categoryId || product.categoryId == categoryId;
+                const matchSupplier = !supplierId || product.supplierId == supplierId;
+
+                return matchSearch && matchCategory && matchSupplier;
+            });
+
+            updateTable();
+        }
+
+        // Sort table
+        function sortTable(column) {
+            if (sortColumn === column) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = column;
+                sortDirection = 'asc';
+            }
+
+            filteredProducts.sort((a, b) => {
+                let aVal = a[column];
+                let bVal = b[column];
+
+                if (typeof aVal === 'string') {
+                    aVal = aVal.toLowerCase();
+                    bVal = bVal.toLowerCase();
+                }
+
+                if (sortDirection === 'asc') {
+                    return aVal > bVal ? 1 : -1;
+                } else {
+                    return aVal < bVal ? 1 : -1;
+                }
+            });
+
+            updateTable();
+        }
+
+        // Update table
+        function updateTable() {
+            const itemsPerPage = parseInt(document.getElementById('itemsPerPage').value);
+            pagination = new Pagination(filteredProducts, itemsPerPage);
+            currentData = pagination.currentData;
+
+            const tbody = document.getElementById('productsTable');
+            tbody.innerHTML = '';
+
+            if (currentData.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center" data-i18n="noData">Aucune donnée disponible</td>
+                    </tr>
+                `;
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+
+            currentData.forEach(product => {
+                const category = categories.find(c => c.id === product.categoryId);
+                const supplier = suppliers.find(s => s.id === product.supplierId);
+
+                const row = document.createElement('tr');
+                let actions = '';
+                if (isAdmin) {
+                    actions = `
+                        <a href="product-form.html?id=${product.id}" class="btn btn-sm btn-warning" title="${i18n.t('edit')}">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <button class="btn btn-sm btn-danger" onclick="deleteProduct(${product.id})" title="${i18n.t('delete')}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    `;
+                } else {
+                    // Explicitly for non-admin users
+                    actions = `
+                        <button class="btn btn-sm btn-success" onclick="addToCart(${product.id})" title="${i18n.t('addToCart')}">
+                            <i class="fas fa-cart-plus"></i>
+                            <span style="margin-left: 5px;">${i18n.t('add')}</span>
+                        </button>
+                    `;
+                }
+
+                // Get product image (use the image field, normalized to the project's images/ folder)
+                const productImage = normalizeProductImage(product);
+
+                row.innerHTML = `
+                    <td>${product.id}</td>
+                    <td style="width: 100px; padding: 10px;">
+                        <img src="${productImage}" alt="${product.name}" 
+                             style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 2px solid #e5e7eb; cursor: pointer; display: block; margin: 0 auto; background: #f3f4f6;"
+                             onclick="window.location.href='product-details.html?id=${product.id}'"
+                             onerror="this.onerror=null; this.src='images/product-${product.id}.jpeg';"
+                             loading="lazy"
+                             title="Cliquer pour voir les détails">
+                    </td>
+                    <td><strong>${product.name}</strong></td>
+                    <td>${category ? category.name : '-'}</td>
+                    <td>${formatCurrency(product.price)}</td>
+                    <td><span class="badge ${product.stock < 10 ? 'badge-danger' : 'badge-success'}">${product.stock}</span></td>
+                    <td>${supplier ? supplier.name : '-'}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="product-details.html?id=${product.id}" class="btn btn-sm btn-info" title="${i18n.t('view')}">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            ${actions}
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            pagination.renderPaginationControls('pagination');
+        }
+
+        // Go to page
+        function goToPage(page) {
+            pagination.setPage(page);
+            currentData = pagination.currentData;
+            updateTable();
+        }
+
+        // Delete product
+        function deleteProduct(id) {
+            const product = Storage.find('products', id);
+            if (!product) return;
+
+            showConfirmModal(
+                `${i18n.t('confirmDelete')}<br><strong>${product.name}</strong>`,
+                () => {
+                    Storage.delete('products', id);
+                    showToast(i18n.t('deleteSuccess'), 'success');
+                    allProducts = Storage.getAll('products');
+                    filterProducts();
+                }
+            );
+        }
+
+        // Add to cart
+        function addToCart(productId) {
+            const product = Storage.find('products', productId);
+            if (!product) return;
+
+            let cart = Storage.getAll('cart');
+            const existingItemIndex = cart.findIndex(item => item.productId === productId);
+
+            if (existingItemIndex !== -1) {
+                cart[existingItemIndex].quantity += 1;
+                Storage.set('cart', cart);
+            } else {
+                Storage.add('cart', {
+                    productId: productId,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    quantity: 1
+                });
+            }
+
+            showToast(i18n.t('addedToCart'), 'success');
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', debounce(filterProducts, 300));
+        document.getElementById('categoryFilter').addEventListener('change', filterProducts);
+        document.getElementById('supplierFilter').addEventListener('change', filterProducts);
+        document.getElementById('itemsPerPage').addEventListener('change', () => {
+            pagination.setItemsPerPage(parseInt(document.getElementById('itemsPerPage').value));
+            updateTable();
+        });
+
+        // Language selector
+        function changeLanguage(lang) {
+            i18n.setLanguage(lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            location.reload();
+        }
+
+        // Sidebar toggle
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('toggleSidebar');
+
+        function checkScreenSize() {
+            if (window.innerWidth <= 1024) {
+                toggleBtn.style.display = 'inline-flex';
+            } else {
+                toggleBtn.style.display = 'none';
+                sidebar.classList.remove('active');
+            }
+        }
+
+        toggleBtn.addEventListener('click', () => sidebar.classList.toggle('active'));
+        window.addEventListener('resize', checkScreenSize);
+        checkScreenSize();
+
+        // Initial render
+        updateTable();
+    </script>
+</body>
+
+</html>

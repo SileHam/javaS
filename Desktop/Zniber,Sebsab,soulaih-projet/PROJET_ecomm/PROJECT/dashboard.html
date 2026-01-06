@@ -1,0 +1,547 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="dashboard">Tableau de bord</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <h2><i class="fas fa-shopping-cart"></i> E-Commerce</h2>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="dashboard.html" class="menu-item active">
+                    <i class="fas fa-chart-line"></i>
+                    <span data-i18n="dashboard">Tableau de bord</span>
+                </a>
+                <a href="products.html" class="menu-item">
+                    <i class="fas fa-box"></i>
+                    <span data-i18n="products">Produits</span>
+                </a>
+                <a href="categories.html" class="menu-item">
+                    <i class="fas fa-tags"></i>
+                    <span data-i18n="categories">Catégories</span>
+                </a>
+                <a href="customers.html" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    <span data-i18n="customers">Clients</span>
+                </a>
+                <a href="orders.html" class="menu-item">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span data-i18n="orders">Commandes</span>
+                </a>
+                <a href="suppliers.html" class="menu-item">
+                    <i class="fas fa-truck"></i>
+                    <span data-i18n="suppliers">Fournisseurs</span>
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar">
+                <div class="navbar-left">
+                    <button class="btn btn-icon btn-secondary" id="toggleSidebar" style="margin-right: 15px; display: none;">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 data-i18n="dashboard">Tableau de bord</h1>
+                </div>
+                <div class="navbar-right">
+                    <button id="toggleDarkMode" class="btn btn-icon btn-secondary" title="Mode sombre"><i id="darkModeIcon" class="fas fa-moon"></i></button><div class="language-selector">
+                        <button class="lang-btn active" onclick="changeLanguage('fr')">FR</button>
+                        <button class="lang-btn" onclick="changeLanguage('ar')">AR</button>
+                        <button class="lang-btn" onclick="changeLanguage('en')">EN</button>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar">A</div>
+                        <span id="userName">Admin</span>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="Auth.logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span data-i18n="logout">Déconnexion</span>
+                    </button>
+                </div>
+            </nav>
+            
+            <!-- Dashboard Filters -->
+            <div class="card" style="margin-bottom: 25px;">
+                <div class="filters-container">
+                    <div class="filter-group">
+                        <label style="font-weight: 600; margin-right: 10px;" data-i18n="filter">Filtrer:</label>
+                        <select id="periodFilter" class="form-control" style="min-width: 150px;">
+                            <option value="all" data-i18n="all">Toutes les périodes</option>
+                            <option value="today" data-i18n="today">Aujourd'hui</option>
+                            <option value="week" data-i18n="week">Cette semaine</option>
+                            <option value="month" data-i18n="month">Ce mois</option>
+                            <option value="year" data-i18n="year">Cette année</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label style="font-weight: 600; margin-right: 10px;" data-i18n="category">Catégorie:</label>
+                        <select id="categoryFilter" class="form-control" style="min-width: 180px;">
+                            <option value="all" data-i18n="all">Toutes les catégories</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-icon primary">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="totalProducts">0</h3>
+                        <p data-i18n="totalProducts">Total Produits</p>
+                    </div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-icon success">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="totalCategories">0</h3>
+                        <p data-i18n="totalCategories">Total Catégories</p>
+                    </div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-icon info">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="totalCustomers">0</h3>
+                        <p data-i18n="totalCustomers">Total Clients</p>
+                    </div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-icon warning">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="totalOrders">0</h3>
+                        <p data-i18n="totalOrders">Total Commandes</p>
+                    </div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-icon danger">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="totalRevenue">0 DH</h3>
+                        <p data-i18n="totalRevenue">Chiffre d'affaires</p>
+                    </div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-icon purple">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3 id="totalSuppliers">0</h3>
+                        <p data-i18n="activeSuppliers">Fournisseurs actifs</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts -->
+            <div class="chart-grid">
+                <div class="chart-card">
+                    <h3 data-i18n="salesByCategory">Ventes par catégorie</h3>
+                    <canvas id="pieChart"></canvas>
+                </div>
+                
+                <div class="chart-card">
+                    <h3 data-i18n="ordersByStatus">Commandes par statut</h3>
+                    <canvas id="donutChart"></canvas>
+                </div>
+                
+                <div class="chart-card" style="grid-column: span 2;">
+                    <h3 data-i18n="monthlyRevenue">Revenus mensuels</h3>
+                    <canvas id="lineChart"></canvas>
+                </div>
+                
+                <div class="chart-card">
+                    <h3 data-i18n="topProducts">Top 10 produits</h3>
+                    <canvas id="barChart"></canvas>
+                </div>
+                
+                <div class="chart-card">
+                    <h3 data-i18n="customerDistribution">Répartition des clients par ville</h3>
+                    <canvas id="polarChart"></canvas>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="data/initial-data.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        // Initialize
+        initializeData();
+        i18n.translatePage();
+        initLanguageSelector();
+        
+        // Update user info
+        const session = Auth.getSession();
+        if (session) {
+            document.getElementById('userName').textContent = session.name;
+            document.getElementById('userAvatar').textContent = session.name.charAt(0).toUpperCase();
+        }
+        
+        // Load data
+        let products = Storage.getAll('products');
+        let categories = Storage.getAll('categories');
+        let customers = Storage.getAll('customers');
+        let orders = Storage.getAll('orders');
+        let suppliers = Storage.getAll('suppliers');
+        
+        // Populate category filter
+        const categoryFilter = document.getElementById('categoryFilter');
+        categories.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.name;
+            categoryFilter.appendChild(option);
+        });
+        
+        // Chart instances for updates
+        let pieChart, donutChart, lineChart, barChart, polarChart;
+        
+        // Update KPIs
+        document.getElementById('totalProducts').textContent = products.length;
+        document.getElementById('totalCategories').textContent = categories.length;
+        document.getElementById('totalCustomers').textContent = customers.length;
+        document.getElementById('totalOrders').textContent = orders.length;
+        document.getElementById('totalSuppliers').textContent = suppliers.length;
+        
+        const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
+        document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
+        
+        // Chart colors
+        const colors = {
+            primary: '#4F46E5',
+            success: '#10B981',
+            warning: '#F59E0B',
+            danger: '#EF4444',
+            info: '#3B82F6',
+            purple: '#7C3AED',
+            pink: '#EC4899',
+            teal: '#14B8A6',
+            orange: '#F97316',
+            indigo: '#6366F1'
+        };
+        
+        const chartColors = [
+            colors.primary, colors.success, colors.warning, 
+            colors.danger, colors.info, colors.purple,
+            colors.pink, colors.teal, colors.orange, colors.indigo
+        ];
+        
+        // Function to filter data by period
+        function filterByPeriod(data, period) {
+            if (period === 'all') return data;
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            
+            return data.filter(item => {
+                const itemDate = new Date(item.date || item.createdAt);
+                switch(period) {
+                    case 'today':
+                        return itemDate >= today;
+                    case 'week':
+                        const weekAgo = new Date(today);
+                        weekAgo.setDate(weekAgo.getDate() - 7);
+                        return itemDate >= weekAgo;
+                    case 'month':
+                        return itemDate.getMonth() === now.getMonth() && itemDate.getFullYear() === now.getFullYear();
+                    case 'year':
+                        return itemDate.getFullYear() === now.getFullYear();
+                    default:
+                        return true;
+                }
+            });
+        }
+        
+        // Function to update all charts
+        function updateCharts() {
+            const period = document.getElementById('periodFilter').value;
+            const categoryId = document.getElementById('categoryFilter').value;
+            
+            let filteredOrders = filterByPeriod(orders, period);
+            let filteredProducts = products;
+            
+            if (categoryId !== 'all') {
+                filteredProducts = products.filter(p => p.categoryId == categoryId);
+            }
+            
+            // Update KPIs
+            const filteredProductsCount = categoryId === 'all' ? products.length : filteredProducts.length;
+            document.getElementById('totalProducts').textContent = filteredProductsCount;
+            document.getElementById('totalCategories').textContent = categories.length;
+            document.getElementById('totalCustomers').textContent = customers.length;
+            document.getElementById('totalOrders').textContent = filteredOrders.length;
+            document.getElementById('totalSuppliers').textContent = suppliers.length;
+            
+            const totalRevenue = filteredOrders.reduce((sum, order) => sum + order.total, 0);
+            document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
+            
+            // 1. Update Pie Chart - Sales by Category
+            const categoryData = categories.map(cat => {
+                const catProducts = filteredProducts.filter(p => p.categoryId === cat.id);
+                const revenue = catProducts.reduce((sum, p) => sum + (p.price * (p.stock || 1)), 0);
+                return { name: cat.name, value: revenue };
+            });
+            
+            if (pieChart) pieChart.destroy();
+            pieChart = new Chart(document.getElementById('pieChart'), {
+            type: 'pie',
+            data: {
+                labels: categoryData.map(d => d.name),
+                datasets: [{
+                    data: categoryData.map(d => d.value),
+                    backgroundColor: chartColors,
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { padding: 15, font: { size: 12 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                return context.label + ': ' + formatCurrency(context.parsed);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+            // 2. Update Donut Chart - Orders by Status
+            const statusData = [
+                { status: 'pending', count: filteredOrders.filter(o => o.status === 'pending').length },
+                { status: 'processing', count: filteredOrders.filter(o => o.status === 'processing').length },
+                { status: 'shipped', count: filteredOrders.filter(o => o.status === 'shipped').length },
+                { status: 'delivered', count: filteredOrders.filter(o => o.status === 'delivered').length },
+                { status: 'cancelled', count: filteredOrders.filter(o => o.status === 'cancelled').length }
+            ];
+            
+            if (donutChart) donutChart.destroy();
+            donutChart = new Chart(document.getElementById('donutChart'), {
+            type: 'doughnut',
+            data: {
+                labels: statusData.map(d => i18n.t(d.status)),
+                datasets: [{
+                    data: statusData.map(d => d.count),
+                    backgroundColor: [colors.warning, colors.info, colors.primary, colors.success, colors.danger],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { padding: 15, font: { size: 12 } }
+                    }
+                }
+            }
+        });
+        
+            // 3. Update Line Chart - Monthly Revenue
+            const monthlyData = Array.from({length: 12}, (_, i) => {
+                const month = i + 1;
+                const monthOrders = filteredOrders.filter(o => {
+                    const orderMonth = new Date(o.date).getMonth() + 1;
+                    return orderMonth === month;
+                });
+                return monthOrders.reduce((sum, o) => sum + o.total, 0);
+            });
+            
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            if (lineChart) lineChart.destroy();
+            lineChart = new Chart(document.getElementById('lineChart'), {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: i18n.t('totalRevenue'),
+                    data: monthlyData,
+                    borderColor: colors.primary,
+                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    pointBackgroundColor: colors.primary
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => formatCurrency(context.parsed.y)
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: (value) => formatCurrency(value)
+                        }
+                    }
+                }
+            }
+        });
+        
+            // 4. Update Bar Chart - Top Products
+            const topProducts = filteredProducts
+                .sort((a, b) => (b.price * b.stock) - (a.price * a.stock))
+                .slice(0, 10);
+            
+            if (barChart) barChart.destroy();
+            barChart = new Chart(document.getElementById('barChart'), {
+            type: 'bar',
+            data: {
+                labels: topProducts.map(p => p.name.substring(0, 15) + '...'),
+                datasets: [{
+                    label: i18n.t('totalRevenue'),
+                    data: topProducts.map(p => p.price * p.stock),
+                    backgroundColor: colors.success,
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => formatCurrency(context.parsed.y)
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: (value) => formatCurrency(value)
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                }
+            }
+        });
+        
+            // 5. Update Polar Area Chart - Customers by City
+            const cityData = {};
+            customers.forEach(c => {
+                cityData[c.city] = (cityData[c.city] || 0) + 1;
+            });
+            
+            const cities = Object.keys(cityData);
+            const cityCounts = Object.values(cityData);
+            
+            if (polarChart) polarChart.destroy();
+            polarChart = new Chart(document.getElementById('polarChart'), {
+            type: 'polarArea',
+            data: {
+                labels: cities,
+                datasets: [{
+                    data: cityCounts,
+                    backgroundColor: chartColors.map(c => c + '80'),
+                    borderColor: chartColors,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { padding: 15, font: { size: 12 } }
+                    }
+                }
+            }
+            });
+        }
+        
+        // Initial chart render
+        updateCharts();
+        
+        // Filter event listeners
+        document.getElementById('periodFilter').addEventListener('change', updateCharts);
+        document.getElementById('categoryFilter').addEventListener('change', updateCharts);
+        
+        // Language selector
+        function changeLanguage(lang) {
+            i18n.setLanguage(lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            location.reload();
+        }
+        
+        // Sidebar toggle for mobile
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('toggleSidebar');
+        
+        function checkScreenSize() {
+            if (window.innerWidth <= 1024) {
+                toggleBtn.style.display = 'inline-flex';
+            } else {
+                toggleBtn.style.display = 'none';
+                sidebar.classList.remove('active');
+            }
+        }
+        
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+        
+        window.addEventListener('resize', checkScreenSize);
+        checkScreenSize();
+    </script>
+</body>
+</html>
+
