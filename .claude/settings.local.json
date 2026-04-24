@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm init *)",
+      "Bash(pip install *)",
+      "Bash(git add *)",
+      "Bash(python manage.py makemigrations accounts events registrations)",
+      "Bash(python -c \"import pkg_resources\")",
+      "Bash(python -m pip install \"djangorestframework-simplejwt==5.3.1\")",
+      "Bash(python manage.py migrate)",
+      "Bash(python manage.py showmigrations)",
+      "mcp__Claude_Preview__preview_start"
+    ]
+  }
+}
