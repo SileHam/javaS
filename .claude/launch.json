@@ -9,8 +9,8 @@
     },
     {
       "name": "React Frontend",
-      "runtimeExecutable": "C:\\Program Files\\nodejs\\npm.cmd",
-      "runtimeArgs": ["--prefix", "frontend", "run", "dev"],
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
+      "runtimeArgs": ["frontend/node_modules/vite/bin/vite.js", "--host"],
       "port": 5173
     }
   ]
