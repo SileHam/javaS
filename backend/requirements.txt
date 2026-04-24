@@ -1,0 +1,12 @@
+Django==4.2
+djangorestframework==3.15
+djangorestframework-simplejwt==5.3.1
+django-cors-headers==4.3
+# mysqlclient==2.2  # requires MySQL + MSVC on Windows; using SQLite for dev
+python-decouple==3.8
+Pillow==10.3
+reportlab==4.1
+openpyxl==3.1
+qrcode==7.4
+scikit-learn==1.4
+django-crontab==0.7
